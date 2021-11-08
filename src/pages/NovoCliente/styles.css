@@ -1,0 +1,9 @@
+.card-content input:focus + label, .materialize-textarea:focus:not([readonly]) + label {
+    color: #616161 !important;
+}
+       
+.card-content input:focus, .materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid #616161 !important;
+    box-shadow: 0 1px 0 0 #616161 !important;
+}
+
