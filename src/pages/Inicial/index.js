@@ -1,26 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './styles.css';
+import api from '../../services/api';
 
 export default function Inicial() {
 
-    //acessa a API
-    const baseUrl = "https://localhost:44370/api/clientes";
+    //Lista de clientes
+    const [clientes, setClientes] = useState([]);
 
-    const [data, setData] = useState([]);
-
-    const pedidoGet = async () => {
-        await axios.get(baseUrl)
-            .then(response => {
-                setData(response.data);
-            }).catch(error => {
-                console.log(error);
-            })
-    }
-
+    //Tratar os efeitos colaterais gerados pelos requests Get, Post e Put
     useEffect(() => {
-        pedidoGet();
+        api.get('api/clientes').then(response => {
+            setClientes(response.data);
+        }).catch(error => {
+            console.log(error);
+        })
     })
 
     return (
@@ -72,7 +66,7 @@ export default function Inicial() {
             </div>
             <h3 className="center">Relação de Clientes</h3>
             <div className="row">
-                {data.map(cliente => (
+                {clientes.map(cliente => (
                     <div className="col s12 l6">
                         <div key={cliente.clienteId} className="card z-depth-0 grey lighten-3">
                             <div className="card-content">
