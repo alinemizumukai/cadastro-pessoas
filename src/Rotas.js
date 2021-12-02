@@ -2,8 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Detalhes from "./pages/Detalhes";
 import Inicial from "./pages/Inicial";
-import NovoCliente from "./pages/NovoCliente";
-import EditarCliente from "./pages/EditarCliente";
+import Clientes from "./pages/Clientes";
 
 export default function Rotas(){
     return(
@@ -11,8 +10,7 @@ export default function Rotas(){
             <Routes>
                 <Route path="/" element={<Inicial />} />
                 <Route path="/detalhes/:clienteid" element={<Detalhes />} />
-                <Route path="/novocliente/:clienteid" element={<NovoCliente />} />
-                <Route path="/editarcliente/:clienteid" element={<EditarCliente />} />
+                <Route path="/novocliente/:clienteid" element={<Clientes />} />
             </Routes>
         </BrowserRouter>
     );

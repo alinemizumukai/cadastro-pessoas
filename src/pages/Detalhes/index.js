@@ -76,7 +76,7 @@ export default function Detalhes() {
                                 </div>
                             </div>
                             <div className="center-align col s2">
-                                <Link className="material-icons" to={`/editarcliente/${data.clienteId}`}>edit</Link>
+                                <Link className="material-icons" to={`/novocliente/${data.clienteId}`}>edit</Link>
                                 <br></br>
                                 <Link className="material-icons" to="deletarcliente">delete</Link>
                             </div>
