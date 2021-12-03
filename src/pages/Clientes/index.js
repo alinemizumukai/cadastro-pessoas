@@ -46,7 +46,7 @@ export default function Clientes() {
 
     //incluir ou editar
     async function saveOrUpdate(event) {
-        event.preventDefault();
+        event.preventDefault(); //evita o refresh da página
 
         const data = {
             nome,
@@ -60,11 +60,11 @@ export default function Clientes() {
             //Validar documentos
             if (tipoPessoa === '0' || tipoPessoa === 0) {
                 if (cpf.isValid(nroDocumento) === false) {
-                    nroDocumento = '';
+                    return alert('CPF inválido');
                 }
             } else if (tipoPessoa === '1' || tipoPessoa === 1) {
                 if (cnpj.isValid(nroDocumento) === false) {
-                    nroDocumento = '';
+                    return alert('CNPJ inválido');
                 }
             }
 
@@ -82,7 +82,6 @@ export default function Clientes() {
         } catch (error) {
             alert('Erro ao salvar: ' + error)
         }
-        //history('/novoendereco');
     }
 
     return (
@@ -124,7 +123,7 @@ export default function Clientes() {
                                 </div>
                             </div>
                             <div className="row">
-                                {tipoPessoa == 0 ?
+                                {tipoPessoa === '0' || tipoPessoa === 0 ?
                                     <div className="col s6">
                                         <label>Data Nasc.</label>
                                         <input type="date" name="dataNasc"
