@@ -1,84 +1,120 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import './styles.css';
+import api from '../../services/api';
 
 export default function Detalhes() {
 
+    //Dados do cliente
+    const [clienteId, setClienteId] = useState('');
+    const [nome, setNome] = useState('');
+    const [tipoPessoa, setTipoPessoa] = useState('');
+    const [nroDocumento, setNroDocumento] = useState('');
+    const [dataNasc, setDataNasc] = useState('');
+    const [status, setStatus] = useState('');
+
     const { clienteid } = useParams();
+    const history = useNavigate();
 
-    //acessa a API
-    const baseUrl = `https://localhost:44370/api/clientes/${clienteid}`;
+    //função para carregar os dados do cliente (pelo id)
+    async function loadCliente() {
+        try {
+            const response = await api.get(`api/clientes/${clienteid}`)
 
-    const [data, setData] = useState([]);
-    const [updateData, setUpdateData] = useState(true);
+            setClienteId(response.data.clienteId);
+            setNome(response.data.nome);
+            setTipoPessoa(response.data.tipoPessoa);
+            setNroDocumento(response.data.nroDocumento);
+            setDataNasc(response.data.dataNasc);
+            setStatus(response.data.status);
 
-    const pedidoGet = async () => {
-        await axios.get(baseUrl)
-            .then(response => {
-                setData(response.data);
-            }).catch(error => {
-                console.log(error);
-            })
+        } catch (error) {
+            alert('Erro ao recuperar os dados do cliente' + error)
+            history('/');
+        }
     }
 
+    //verificar se é inclusão ou edição
     useEffect(() => {
-        if (updateData) {
-            pedidoGet();
-            setUpdateData(false);
-        }
-    }, [updateData])
+        if (clienteid === '0')
+            return;
+        else
+            loadCliente();
+    }, clienteid)
 
+    //Função para deletar um cliente (torná-lo inativo)
+    async function deletecliente(event){
+        const data = {
+            clienteId,
+            nome,
+            tipoPessoa,
+            nroDocumento,
+            dataNasc
+        }
+
+        try {
+            if(window.confirm('Deseja excluir o cliente?'))
+            {
+                data.status = 0;
+                await api.put(`api/clientes/${clienteid}`, data)
+                history('/');
+            }
+            
+        } catch (error) {
+            alert('Não foi possível excluir o cliente.')
+            history('/');
+        }
+    }
 
     return (
         <div className="container">
-            <h3 className="center-align">Cliente {data.nome}</h3>
+            <h3 className="center-align">Cliente {nome}</h3>
             <div className="row">
                 <div className="col s12">
                     <div className="card z-depth-0 grey lighten-3">
                         <div className="row">
                             <div className="col s10">
                                 <div className="card-content">
-                                    <input type="hidden" name="id" value={data.clienteId} />
+                                    <input type="hidden" name="id" value={clienteId} />
                                     <label>Nome</label>
-                                    <input type="text" name="nome" value={data.nome} />
+                                    <input type="text" name="nome" value={nome} />
                                     <div className="row">
                                         <div className="col s6">
                                             <label>Tipo de Pessoa</label>
                                             <br></br>
                                             <br></br>
                                             <label>
-                                                {data.tipoPessoa === 0 ? <input type="radio" name="tipoPessoa" checked /> : <input type="radio" name="tipoPessoa" />}
+                                                {tipoPessoa === 0 ? <input type="radio" name="tipoPessoa" checked /> : <input type="radio" name="tipoPessoa" />}
                                                 <span>Física</span>
                                             </label>
                                             <label>
-                                                {data.tipoPessoa === 1 ? <input type="radio" name="tipoPessoa" checked /> : <input type="radio" name="tipoPessoa" />}
+                                                {tipoPessoa === 1 ? <input type="radio" name="tipoPessoa" checked /> : <input type="radio" name="tipoPessoa" />}
                                                 <span>Jurídica</span>
                                             </label>
                                         </div>
                                         <div className="col s6">
-                                            <label>{data.tipoPessoa === 0 ? 'CPF' : 'CNPJ'}</label>
-                                            <input type="text" name="nroDoc" value={data.nroDocumento} />
+                                            <label>{tipoPessoa === 0 ? 'CPF' : 'CNPJ'}</label>
+                                            <input type="text" name="nroDoc" value={nroDocumento} />
                                         </div>
                                     </div>
                                     <div className="row">
-                                        {data.tipoPessoa === 0 ?
+                                        {tipoPessoa === 0 ?
                                             <div className="col s6">
                                                 <label>Data Nasc.</label>
-                                                <input type="text" name="dataNasc" value={data.dataNasc} />
+                                                <input type="text" name="dataNasc" value={new Date (dataNasc).toLocaleDateString()} />
                                             </div>
                                             : <></>}
                                         <div className="col s6">
                                             <label>Status</label>
-                                            <input type="text" name="status" value={data.status === 1 ? 'Ativo' : 'Inativo'} />
+                                            <input type="text" name="status" value={status === 1 ? 'Ativo' : 'Inativo'} />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="center-align col s2">
-                                <Link className="material-icons" to={`/novocliente/${data.clienteId}`}>edit</Link>
+                                <Link className="material-icons" to={`/novocliente/${clienteId}`}>edit</Link>
                                 <br></br>
-                                <Link className="material-icons" to="deletarcliente">delete</Link>
+                                <Link className="material-icons" to="deletarcliente" onClick={deletecliente}>delete</Link>
                             </div>
                         </div>
                     </div>
