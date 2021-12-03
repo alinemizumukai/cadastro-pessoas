@@ -127,7 +127,7 @@ export default function Clientes() {
                                     <div className="col s6">
                                         <label>Data Nasc.</label>
                                         <input type="date" name="dataNasc"
-                                            value={dataNasc}
+                                            value={new Date (dataNasc).toLocaleDateString('en-CA')}
                                             onChange={e => setDataNasc(e.target.value)}
                                         />
                                     </div>
